@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Article(models.Model):
@@ -8,6 +9,7 @@ class Article(models.Model):
     body = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     thumb = models.ImageField(default='defult.jpg', blank = True)
+    author  =  models.ForeignKey(User,on_delete=models.PROTECT,default=None)
 
     # add in author later
 
@@ -17,7 +19,7 @@ class Article(models.Model):
     def snippet(self):
         return self.body[:50] + '...'
 
-  #  def save(self,*args, **kwargs):
-   #     if not self.slug:
-    #        self.slug = slugify(self.title)
-    #   super(Article, self).save(self,*args, **kwargs)
+    def save(self,*args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Article, self).save(self,*args, **kwargs)
